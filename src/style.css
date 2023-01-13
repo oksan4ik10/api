@@ -19,6 +19,10 @@ svg{
     margin-left: 20px;
     margin-bottom: 20px;
 }
+.header__btns{
+    display: flex;
+    gap: 20px;
+}
 
 
 .btn { 
@@ -67,7 +71,7 @@ svg{
     transition: all 0.3s ease;
   }
   .btn:hover {
-    color: #fcd9ff;
+    color: #4c1751;
     border-radius: 5px;
 
   }
@@ -133,11 +137,13 @@ svg{
 }
 .game {
 }
-.game__title {
+.title,.subtitle{
     text-transform: capitalize;
+
+}
+.game__title {
 }
 .game__subtitle {
-    text-transform: capitalize;
     margin-bottom: 10px;
 
 }

@@ -7,5 +7,8 @@ const test = async (local: string) => {
 
   console.log(commits);
 };
+import "./style.css";
+import { App } from "./pages/app";
 
-test(t);
+const app = new App();
+app.run();
