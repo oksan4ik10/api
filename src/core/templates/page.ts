@@ -6,6 +6,8 @@ abstract class Page {
   protected pageCount: HTMLElement;
   protected btnNext: HTMLElement;
   protected btnPrev: HTMLElement;
+  page: number;
+
   constructor(id: string) {
     this.container = document.createElement("div");
     this.container.id = id;
@@ -21,9 +23,21 @@ abstract class Page {
     this.btnPrev.className = "btn btn__prev";
     this.btnNext.textContent = "Next";
     this.btnPrev.textContent = "Prev";
+    this.page = 1;
+  }
+  test() {
+    console.log(12);
+  }
+  changePage() {
+    console.log(34);
+
+    //method();
   }
 
   render() {
+    console.log(this.btnNext);
+    console.log(34);
+
     return this.container;
   }
 }

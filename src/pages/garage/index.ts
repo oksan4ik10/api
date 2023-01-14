@@ -1,24 +1,35 @@
 import Page from "../../core/templates/page";
+import { App } from "../app";
 import { Cat } from "../../core/components/main/cat";
 import { ICat } from "../../types/types";
 import { Api } from "../../core/components/api/api";
+import { FormCat } from "../../core/components/main/form";
+import { ICreateCat } from "../../types/types";
 
 export class Main extends Page {
   cats: ICat[];
   areaCats: HTMLElement;
+  formCreate: FormCat;
+  formUpdate: FormCat;
+  area: HTMLElement;
 
   constructor(id: string) {
     super(id);
     this.cats = [];
     this.areaCats = document.createElement("div");
+    this.formCreate = new FormCat("settings__form", "create");
+    this.formUpdate = new FormCat("settings__form", "update");
+    this.page = App.pageCreate;
+    this.area = document.createElement("div");
   }
 
-  async createGameArea(page = 1, limit = 7) {
-    const area = document.createElement("div");
-    area.className = "garage__game game";
+  async createGameArea(limit = 7) {
+    this.area.className = "game";
     this.title.classList.add("game__title");
     this.subtitle.classList.add("game__subtitle");
-    const commits = await Api.getCars(limit, page);
+    const commits = await Api.getCats(limit, this.page);
+    if (!commits) return;
+    this.area.textContent = "";
     const count = commits.count;
     this.subtitle.textContent = "Page #";
     this.title.textContent = "shelter ";
@@ -26,9 +37,9 @@ export class Main extends Page {
     this.pageCount.textContent = "1";
     this.title.append(this.count);
     this.subtitle.append(this.pageCount);
-    area.append(this.title);
-    area.append(this.subtitle);
-    this.container.append(area);
+    this.area.append(this.title);
+    this.area.append(this.subtitle);
+    this.areaCats.textContent = "";
     this.areaCats.className = "cats__item cat";
     commits.cats.forEach((element: ICat) => {
       const el = new Cat(
@@ -40,7 +51,7 @@ export class Main extends Page {
       );
       this.areaCats.append(el.render());
     });
-    this.container.append(this.areaCats);
+    this.area.append(this.areaCats);
     const btnsPagination = document.createElement("div");
     btnsPagination.className = "pagination";
     btnsPagination.append(this.btnPrev);
@@ -49,34 +60,44 @@ export class Main extends Page {
       this.btnNext.setAttribute("disabled", "true");
       this.btnPrev.setAttribute("disabled", "true");
     }
-    this.container.append(btnsPagination);
+    this.area.append(btnsPagination);
+    this.container.append(this.area);
   }
   createMain() {
-    this.container.innerHTML = `    <div class="garage">
-    <div class="garage__settings settings">
-        <form class="settings__form" id="create-car">
-            <input type="text" name="name-create-cat" id="name-create-cat" class="settings__input">
-            <input type="color" name="name-create-color" id="name-create-color">
-            <button class="btn create__btn">CREATE</button>
-        </form>
-        <form  class="settings__form" id="update-car" disabled>
-            <input type="text" name="name-update-cat" id="name-update-cat" class="settings__input" disabled>
-            <input type="color" name="name-update-color" id="name-update-color" disabled>
-            <button class="btn update__btn" disabled>update</button>
-        </form>
-        <div class="settings__btns">
-            <button class="btn__start btn btn_g">START</button>
-            <button class="btn__reset btn btn_g">reset</button>
-            <button class="btn__generate btn">generate cat</button>
-        </div>
+    const blockSettings = document.createElement("div");
+    blockSettings.className = "settings";
 
+    blockSettings.append(this.formCreate.render());
+    blockSettings.append(this.formUpdate.render());
+    this.formUpdate.setDisabled("false");
 
-    </div>`;
+    const el = document.createElement("div");
+    el.className = "settings__btns";
+    el.innerHTML = `<button class="btn__start btn btn_g">START</button>
+    <button class="btn__reset btn btn_g">reset</button>
+    <button class="btn__generate btn">generate cat</button>`;
+    blockSettings.append(el);
+
+    this.container.append(blockSettings);
   }
+  async createCat(obj: ICreateCat) {
+    await Api.create(obj);
+    this.createGameArea();
+  }
+  createCatBtn(e: Event) {
+    e.preventDefault();
+    const text = this.formCreate.inputText.value;
+    if (!text) return;
+    const color = this.formCreate.color.value;
+    if (!color) return;
+    this.createCat({ name: text, color: color });
+  }
+
   render(): HTMLElement {
     this.createGameArea();
-
     this.createMain();
+    this.formCreate.btn.addEventListener("click", this.createCatBtn.bind(this));
+    this.btnNext.addEventListener("click", this.changePage.bind(this));
     return this.container;
   }
 }
