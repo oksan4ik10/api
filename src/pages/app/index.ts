@@ -29,8 +29,6 @@ export class App {
     if (page) {
       const pageHTML = page.render();
       pageHTML.id = App.defaultPageId;
-      console.log(page);
-
       App.container.append(pageHTML);
     }
   }
