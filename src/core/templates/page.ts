@@ -25,19 +25,23 @@ abstract class Page {
     this.btnPrev.textContent = "Prev";
     this.page = 1;
   }
-  test() {
-    console.log(12);
+  async createArea() {
+    return;
   }
-  changePage() {
-    console.log(34);
-
-    //method();
+  async changePageNext() {
+    this.page++;
+    await this.createArea();
+  }
+  async changePagePrev() {
+    this.page--;
+    if (this.page === 0) {
+      this.page = 1;
+      return;
+    }
+    await this.createArea();
   }
 
   render() {
-    console.log(this.btnNext);
-    console.log(34);
-
     return this.container;
   }
 }
