@@ -13,6 +13,11 @@ export class Api {
     const commits: ICat[] = await response.json();
     return { cats: commits, count: count };
   }
+  static async getCat(id: number) {
+    const response = await fetch(`${localAdress}\\garage\\${id}`);
+    const commits: ICat = await response.json();
+    return commits;
+  }
   static async create(obj: ICreateCat) {
     const response = await fetch(`${localAdress}\\garage`, {
       method: "POST",
@@ -23,5 +28,19 @@ export class Api {
     });
     const result = await response.json();
     return result;
+  }
+  static async update(id: number, obj: ICreateCat) {
+    const response = await fetch(`${localAdress}\\garage\\${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: JSON.stringify(obj),
+    });
+    if (response.status === 200) {
+      const result = await response.json();
+      return result;
+    }
+    console.error("Cat not found!");
   }
 }

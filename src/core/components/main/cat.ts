@@ -17,7 +17,8 @@ export class Cat extends Component {
     this.id = id;
   }
   createCat() {
-    this.container.innerHTML = `<div class="cats__item cat">
+    this.container.setAttribute("id", String(this.id));
+    this.container.innerHTML = `
     <div class="cat__btns">
         <button class="btn btn__select">select</button>
         <button class="btn btn__remove">remove</button>
@@ -43,7 +44,7 @@ export class Cat extends Component {
     </div>
 
     
-</div>`;
+`;
   }
   render() {
     this.createCat();

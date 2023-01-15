@@ -116,7 +116,7 @@ export class Main extends Page {
 
     blockSettings.append(this.formCreate.render());
     blockSettings.append(this.formUpdate.render());
-    this.formUpdate.setDisabled("false");
+    this.formUpdate.setDisabled("true");
 
     const el = document.createElement("div");
     el.className = "settings__btns";
@@ -152,6 +152,40 @@ export class Main extends Page {
     }
     this.createArea();
   }
+  async updateCat(id: number, obj: ICreateCat) {
+    await Api.update(id, obj);
+  }
+  updateCatBtn(e: Event) {
+    e.preventDefault();
+    const target = e.target as HTMLElement;
+    const id = target.id;
+    const text = this.formUpdate.inputText.value;
+    if (!text) return;
+    const color = this.formUpdate.color.value;
+    if (!color) return;
+    this.updateCat(Number(id), { name: text, color: color });
+    this.formUpdate.container.reset();
+    this.formUpdate.setDisabled("true");
+    this.createArea();
+  }
+  async btnSelect(id: string) {
+    const cat: ICat = await Api.getCat(Number(id));
+    this.formUpdate.setDisabled("false");
+    this.formUpdate.btn.id = String(cat.id);
+    this.formUpdate.inputText.value = cat.name;
+    this.formUpdate.color.value = cat.color;
+  }
+  btnsCat(e: Event) {
+    const target = e.target as HTMLElement;
+    if (!target.matches(".btn")) return;
+    const id = target.closest(".cat")?.getAttribute("id");
+    if (id) {
+      if (target.matches(".btn__select")) {
+        return this.btnSelect(id);
+      }
+      console.log(id);
+    }
+  }
 
   render(): HTMLElement {
     this.createArea();
@@ -160,6 +194,8 @@ export class Main extends Page {
     this.btnNext.addEventListener("click", this.changePageNext.bind(this));
     this.btnPrev.addEventListener("click", this.changePagePrev.bind(this));
     this.btnGenerate.addEventListener("click", this.generateCat.bind(this));
+    this.areaCats.addEventListener("click", this.btnsCat.bind(this));
+    this.formUpdate.btn.addEventListener("click", this.updateCatBtn.bind(this));
     return this.container;
   }
 }

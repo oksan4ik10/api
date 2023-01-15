@@ -19,7 +19,8 @@ export class FormCat {
   setDisabled(check: string) {
     const elements = this.container.querySelectorAll("*");
     elements.forEach((item) => {
-      item.setAttribute("disabled", check);
+      if (check === "true") item.setAttribute("disabled", check);
+      else item.removeAttribute("disabled");
     });
   }
   render() {
