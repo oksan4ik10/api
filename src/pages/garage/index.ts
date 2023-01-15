@@ -11,7 +11,6 @@ export class Main extends Page {
   areaCats: HTMLElement;
   formCreate: FormCat;
   formUpdate: FormCat;
-  area: HTMLElement;
   btnGenerate: HTMLElement;
   static randomColor(): string {
     const r = Math.floor(Math.random() * 256);
@@ -59,7 +58,7 @@ export class Main extends Page {
     this.formCreate = new FormCat("settings__form", "create");
     this.formUpdate = new FormCat("settings__form", "update");
     this.page = App.pageCreate;
-    this.area = document.createElement("div");
+
     this.btnGenerate = document.createElement("button");
   }
 
@@ -69,6 +68,7 @@ export class Main extends Page {
     this.subtitle.classList.add("game__subtitle");
     const commits = await Api.getCats(7, this.page);
     if (commits.cats.length === 0) return;
+    App.pageCreate = this.page;
     this.area.textContent = "";
     const count = commits.count;
     this.subtitle.textContent = "Page #";
@@ -93,23 +93,10 @@ export class Main extends Page {
     });
     this.area.append(this.areaCats);
 
-    await this.area.append(this.createPagination(Number(count)));
+    await this.area.append(this.createPagination(Number(count), 7));
     this.container.append(this.area);
   }
-  createPagination(num: number) {
-    const btnsPagination = document.createElement("div");
-    btnsPagination.className = "pagination";
-    btnsPagination.append(this.btnPrev);
-    btnsPagination.append(this.btnNext);
-    if (num < 7) {
-      this.btnNext.setAttribute("disabled", "true");
-      this.btnPrev.setAttribute("disabled", "true");
-    } else {
-      this.btnNext.removeAttribute("disabled");
-      this.btnPrev.removeAttribute("disabled");
-    }
-    return btnsPagination;
-  }
+
   createMain() {
     const blockSettings = document.createElement("div");
     blockSettings.className = "settings";

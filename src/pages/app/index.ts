@@ -12,6 +12,7 @@ export class App {
   private static container: HTMLElement = document.body;
   private static defaultPageId = "current-page";
   public static pageCreate = 1;
+  public static pageWinCreate = 1;
 
   header: Header;
   static renderPage(idPage: string) {
@@ -45,7 +46,9 @@ export class App {
   }
   run() {
     App.container.append(this.header.render());
-    App.renderPage(PageIds.MainPage);
+    const hash = window.location.hash.slice(1);
+    if (!hash) App.renderPage(PageIds.MainPage);
+    else App.renderPage(hash);
     this.enableRouteChange();
   }
 }

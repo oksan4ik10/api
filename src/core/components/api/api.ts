@@ -1,5 +1,6 @@
 import { ICat } from "../../../types/types";
 import { ICreateCat } from "../../../types/types";
+import { IWinner } from "../../../types/types";
 export const localAdress = "http://127.0.0.1:3000";
 
 export class Api {
@@ -47,9 +48,42 @@ export class Api {
     const response = await fetch(`${localAdress}\\garage\\${id}`, {
       method: "DELETE",
     });
+    const responseWin = await fetch(`${localAdress}\\winners\\${id}`, {
+      method: "DELETE",
+    });
     if (response.status === 200) {
-      return;
+      if (responseWin.status === 200) return;
     }
     console.error("Cat not found!");
+  }
+  static async getWinners(
+    limit: number,
+    page: number,
+    sort: string,
+    order: string
+  ) {
+    const url = new URL(localAdress + "\\winners");
+    url.searchParams.set("_limit", String(limit));
+    url.searchParams.set("_page", String(page));
+    if (sort) url.searchParams.set("_sort", sort);
+    if (order) url.searchParams.set("_order", order);
+    const response = await fetch(url);
+    const count = response.headers.get("X-Total-Count");
+    const commits: IWinner[] = await response.json();
+    return { winners: commits, count: count };
+  }
+  static async createWin() {
+    const response = await fetch(`${localAdress}\\winners`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: JSON.stringify({ id: 2, wins: 10, time: 21 }),
+    });
+    //console.log(obj);
+
+    const result = await response.json();
+
+    return result;
   }
 }

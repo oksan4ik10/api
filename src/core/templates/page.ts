@@ -7,9 +7,11 @@ abstract class Page {
   protected btnNext: HTMLElement;
   protected btnPrev: HTMLElement;
   page: number;
+  area: HTMLElement;
 
   constructor(id: string) {
     this.container = document.createElement("div");
+    this.area = document.createElement("div");
     this.container.id = id;
     this.title = document.createElement("h1");
     this.subtitle = document.createElement("h3");
@@ -27,6 +29,20 @@ abstract class Page {
   }
   async createArea() {
     return;
+  }
+  createPagination(num: number, limit: number) {
+    const btnsPagination = document.createElement("div");
+    btnsPagination.className = "pagination";
+    btnsPagination.append(this.btnPrev);
+    btnsPagination.append(this.btnNext);
+    if (num < limit) {
+      this.btnNext.setAttribute("disabled", "true");
+      this.btnPrev.setAttribute("disabled", "true");
+    } else {
+      this.btnNext.removeAttribute("disabled");
+      this.btnPrev.removeAttribute("disabled");
+    }
+    return btnsPagination;
   }
   async changePageNext() {
     this.page++;
