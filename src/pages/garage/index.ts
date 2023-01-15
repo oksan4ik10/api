@@ -175,6 +175,10 @@ export class Main extends Page {
     this.formUpdate.inputText.value = cat.name;
     this.formUpdate.color.value = cat.color;
   }
+  async btnRemove(id: string) {
+    await Api.delete(Number(id));
+    this.createArea();
+  }
   btnsCat(e: Event) {
     const target = e.target as HTMLElement;
     if (!target.matches(".btn")) return;
@@ -182,8 +186,9 @@ export class Main extends Page {
     if (id) {
       if (target.matches(".btn__select")) {
         return this.btnSelect(id);
+      } else {
+        return this.btnRemove(id);
       }
-      console.log(id);
     }
   }
 

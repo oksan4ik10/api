@@ -43,4 +43,13 @@ export class Api {
     }
     console.error("Cat not found!");
   }
+  static async delete(id: number) {
+    const response = await fetch(`${localAdress}\\garage\\${id}`, {
+      method: "DELETE",
+    });
+    if (response.status === 200) {
+      return;
+    }
+    console.error("Cat not found!");
+  }
 }
