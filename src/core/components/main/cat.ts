@@ -1,4 +1,6 @@
 import Component from "../../templates/component";
+import { Api } from "../api/api";
+import { IDriveCat } from "../../../types/types";
 
 export class Cat extends Component {
   name: string;
@@ -7,7 +9,7 @@ export class Cat extends Component {
   btnA: HTMLElement;
   btnB: HTMLElement;
   static catImg(color: string) {
-    return `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1920" fill="${color}">
+    return `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1920" fill="${color}" class="cat__img">
     <g>
             .st0{fill:#fff}.st1{fill:none;stroke:#231f20;stroke-width:50;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}
         </style>
@@ -34,6 +36,8 @@ export class Cat extends Component {
     this.btnB = document.createElement("button");
   }
   createCat() {
+    this.btnB.setAttribute("disabled", "true");
+
     this.container.setAttribute("id", String(this.id));
     this.container.innerHTML = `
     <div class="cat__btns">
@@ -61,8 +65,53 @@ export class Cat extends Component {
     catBlock.append(finish);
     this.container.append(catBlock);
   }
+  async row() {
+    this.btnA.setAttribute("disabled", "true");
+    this.btnB.removeAttribute("disabled");
+    const resStart: IDriveCat = await Api.startCat(
+      this.id,
+      this.name,
+      "started"
+    );
+    const duration = resStart.distance / resStart.velocity;
+    const start = performance.now();
+    const idCat = this.id;
+    const cat = this.container.querySelector("svg");
+    let catX = 0;
+    if (cat) {
+      catX =
+        100 -
+        ((cat.getBoundingClientRect().x + 100) / window.screen.availWidth) *
+          100;
+    }
+    let idAnimation: number;
+
+    idAnimation = requestAnimationFrame(function animate(time) {
+      let timeFraction = (time - start) / duration;
+      if (timeFraction > 1) timeFraction = 1;
+      const progress = timeFraction;
+      if (cat) cat.style.right = `calc(${catX}% - ${progress * catX}%)`;
+      if (timeFraction < 1) {
+        idAnimation = requestAnimationFrame(animate);
+      }
+    });
+    const resDrive = await Api.startCat(idCat, this.name, "drive");
+
+    if (!resDrive) {
+      cancelAnimationFrame(idAnimation);
+    }
+  }
+  async stop() {
+    await Api.startCat(this.id, this.name, "stopped");
+    this.container.textContent = "";
+    this.btnA.removeAttribute("disabled");
+    this.createCat();
+  }
   render() {
     this.createCat();
+    this.btnA.addEventListener("click", this.row.bind(this));
+    this.btnB.addEventListener("click", this.stop.bind(this));
+
     return this.container;
   }
 }

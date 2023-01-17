@@ -13,3 +13,7 @@ export interface IWinner {
   wins: number;
   time: number;
 }
+export interface IDriveCat {
+  velocity: number;
+  distance: number;
+}

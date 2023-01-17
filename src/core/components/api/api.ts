@@ -80,10 +80,24 @@ export class Api {
       },
       body: JSON.stringify({ id: 2, wins: 10, time: 21 }),
     });
-    //console.log(obj);
-
     const result = await response.json();
 
     return result;
+  }
+  static async startCat(id: number, name: string, status: string) {
+    const url = new URL(localAdress + "\\engine");
+    url.searchParams.set("id", String(id));
+    url.searchParams.set("status", status);
+    const response = await fetch(url, {
+      method: "PATCH",
+    });
+    if (response.status === 200) {
+      return await response.json();
+    } else if (response.status === 500) {
+      console.error(`${response.status}: Cat ${name} isn't hungry`);
+    } else {
+      console.error(`${response.status}: ${response.statusText}`);
+    }
+    return false;
   }
 }

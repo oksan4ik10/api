@@ -164,32 +164,36 @@ svg{
     color:rgb(67, 28, 70);
     cursor: pointer;
     font-weight: 600;
-    opacity: .5;
-}
-.cat__btn.active{
     opacity: 1;
+}
+.cat__btn[disabled=true]{
+    opacity: .5;
 
 }
-.btn__select {
-}
-.btn__remove {
-}
-.cat__name {
+
+.cat__block{
+    position: relative;
 }
 .cat__area {
     display: flex;
     align-items:center;
     gap:10px;
-    
+    padding:30px 0px;    
+}
+.cat__area  .cat__img{
+    position: absolute;
+    top:0;
+
+
 }
 .cat__block{
     display: flex;
     justify-content: space-between;
     border-bottom: 1px dashed rgb(90, 186, 69);
     align-items: flex-end;
+    position: relative;
 }
 .cat__finish{
-    margin-right: 10%;
     margin-bottom: -7px;
 }
 .cat__finish svg{
