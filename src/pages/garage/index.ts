@@ -5,13 +5,15 @@ import { ICat } from "../../types/types";
 import { Api } from "../../core/components/api/api";
 import { FormCat } from "../../core/components/main/form";
 import { ICreateCat } from "../../types/types";
-
+import { IDriveCat } from "../../types/types";
 export class Main extends Page {
-  cats: ICat[];
+  cats: Cat[];
   areaCats: HTMLElement;
   formCreate: FormCat;
   formUpdate: FormCat;
   btnGenerate: HTMLElement;
+  btnReset: HTMLElement;
+  btnLunch: HTMLElement;
   static randomColor(): string {
     const r = Math.floor(Math.random() * 256);
     const g = Math.floor(Math.random() * 256);
@@ -60,6 +62,8 @@ export class Main extends Page {
     this.page = App.pageCreate;
 
     this.btnGenerate = document.createElement("button");
+    this.btnLunch = document.createElement("button");
+    this.btnReset = document.createElement("button");
   }
 
   async createArea() {
@@ -68,6 +72,7 @@ export class Main extends Page {
     this.subtitle.classList.add("game__subtitle");
     const commits = await Api.getCats(7, this.page);
     if (commits.cats.length === 0) return;
+    this.cats = [];
     App.pageCreate = this.page;
     this.area.textContent = "";
     const count = commits.count;
@@ -89,10 +94,10 @@ export class Main extends Page {
         element.color,
         element.id
       );
+      this.cats.push(el);
       this.areaCats.append(el.render());
     });
     this.area.append(this.areaCats);
-
     await this.area.append(this.createPagination(Number(count), 7));
     this.container.append(this.area);
   }
@@ -109,10 +114,15 @@ export class Main extends Page {
     el.className = "settings__btns";
     this.btnGenerate.className = "btn__generate btn";
     this.btnGenerate.textContent = "generate cat";
+    this.btnLunch.className = "btn__lunch btn btn_g";
+    this.btnLunch.textContent = "Lunch";
+
+    this.btnReset.className = "btn__reset btn btn_g";
+    this.btnReset.textContent = "reset";
+    this.btnReset.setAttribute("disabled", "true");
+    el.append(this.btnLunch);
+    el.append(this.btnReset);
     el.append(this.btnGenerate);
-    // el.innerHTML = `<button class="btn__start btn btn_g">START</button>
-    // <button class="btn__reset btn btn_g">reset</button>
-    // <button class="btn__generate btn">generate cat</button>`;
     blockSettings.append(el);
 
     this.container.append(blockSettings);
@@ -178,6 +188,18 @@ export class Main extends Page {
       }
     }
   }
+  async startGame() {
+    const arrCatsPromise: PromiseSettledResult<IDriveCat>[] = await Promise.allSettled(
+      this.cats.map((item) => item.startPromiseCat())
+    );
+    console.log(arrCatsPromise);
+
+    arrCatsPromise.forEach((item, index) => {
+      if (item.status === "fulfilled") {
+        this.cats[index].row(item.value);
+      }
+    });
+  }
 
   render(): HTMLElement {
     this.createArea();
@@ -188,6 +210,7 @@ export class Main extends Page {
     this.btnGenerate.addEventListener("click", this.generateCat.bind(this));
     this.areaCats.addEventListener("click", this.btnsCat.bind(this));
     this.formUpdate.btn.addEventListener("click", this.updateCatBtn.bind(this));
+    this.btnLunch.addEventListener("click", this.startGame.bind(this));
     return this.container;
   }
 }

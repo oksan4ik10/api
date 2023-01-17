@@ -65,17 +65,22 @@ export class Cat extends Component {
     catBlock.append(finish);
     this.container.append(catBlock);
   }
-  async row() {
+  startPromiseCat() {
+    return Api.startCat(this.id, this.name, "started");
+  }
+  drivePromiseCat() {
+    return Api.startCat(this.id, this.name, "drive");
+  }
+  async clickABtn() {
+    const res = await this.startPromiseCat();
+    this.row(res);
+  }
+  async row(resStart: IDriveCat) {
     this.btnA.setAttribute("disabled", "true");
     this.btnB.removeAttribute("disabled");
-    const resStart: IDriveCat = await Api.startCat(
-      this.id,
-      this.name,
-      "started"
-    );
+
     const duration = resStart.distance / resStart.velocity;
     const start = performance.now();
-    const idCat = this.id;
     const cat = this.container.querySelector("svg");
     let catX = 0;
     if (cat) {
@@ -95,7 +100,7 @@ export class Cat extends Component {
         idAnimation = requestAnimationFrame(animate);
       }
     });
-    const resDrive = await Api.startCat(idCat, this.name, "drive");
+    const resDrive = await this.drivePromiseCat();
 
     if (!resDrive) {
       cancelAnimationFrame(idAnimation);
@@ -109,7 +114,7 @@ export class Cat extends Component {
   }
   render() {
     this.createCat();
-    this.btnA.addEventListener("click", this.row.bind(this));
+    this.btnA.addEventListener("click", this.clickABtn.bind(this));
     this.btnB.addEventListener("click", this.stop.bind(this));
 
     return this.container;
