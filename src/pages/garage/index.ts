@@ -76,8 +76,14 @@ export class Main extends Page {
     this.title.classList.add("game__title");
     this.subtitle.classList.add("game__subtitle");
     const commits = await Api.getCats(7, this.page);
+    if (Number(commits.count) <= 1) {
+      this.area.textContent = "Not hungry cats. Create cat";
+      this.btnLunch.setAttribute("disabled", "true");
+      return;
+    }
     if (commits.cats.length === 0) return;
     this.cats = [];
+    this.btnLunch.removeAttribute("disabled");
     App.pageCreate = this.page;
     this.area.textContent = "";
     const count = commits.count;
@@ -104,7 +110,6 @@ export class Main extends Page {
     });
     this.area.append(this.areaCats);
     await this.area.append(this.createPagination(Number(count), 7));
-    this.container.append(this.area);
   }
 
   createMain() {
@@ -245,8 +250,9 @@ export class Main extends Page {
   }
 
   render() {
-    this.createArea();
     this.createMain();
+    this.createArea();
+    this.container.append(this.area);
     this.formCreate.btn.addEventListener("click", this.createCatBtn.bind(this));
     this.btnNext.addEventListener("click", this.changePageNext.bind(this));
     this.btnPrev.addEventListener("click", this.changePagePrev.bind(this));
