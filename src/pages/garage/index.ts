@@ -110,18 +110,15 @@ export class Main extends Page {
   createMain() {
     const blockSettings = document.createElement("div");
     blockSettings.className = "settings";
-
     blockSettings.append(this.formCreate.render());
     blockSettings.append(this.formUpdate.render());
     this.formUpdate.setDisabled("true");
-
     const el = document.createElement("div");
     el.className = "settings__btns";
     this.btnGenerate.className = "btn__generate btn";
     this.btnGenerate.textContent = "generate cat";
     this.btnLunch.className = "btn__lunch btn btn_g";
     this.btnLunch.textContent = "Lunch";
-
     this.btnReset.className = "btn__reset btn btn_g";
     this.btnReset.textContent = "reset";
     this.btnReset.setAttribute("disabled", "true");
@@ -195,6 +192,8 @@ export class Main extends Page {
   }
   async startGame() {
     this.btnLunch.setAttribute("disabled", "true");
+    this.btnNext.setAttribute("disabled", "true");
+    this.btnPrev.setAttribute("disabled", "true");
     const arrCatsPromise: PromiseSettledResult<IDriveCat>[] = await Promise.allSettled(
       this.cats.map((item) => item.startPromiseCat())
     );
@@ -212,11 +211,12 @@ export class Main extends Page {
     }
   }
   async addWinner(obj: IWinnerCatRace) {
-    const res: IWinner = await Api.getWin(obj.cat.id);
-    let resTime = res.time;
-    if (Object.keys(res).length === 0) {
+    const res: IWinner | undefined = await Api.getWin(obj.cat.id);
+    let resTime: number;
+    if (!res) {
       await Api.createWin({ id: obj.cat.id, time: Number(obj.time), wins: 1 });
     } else {
+      resTime = res.time;
       if (resTime > Number(obj.time)) resTime = Number(obj.time);
       await Api.updateWin({
         id: obj.cat.id,

@@ -20,7 +20,7 @@ export class Win extends Page {
     this.thead.textContent = "";
     const tr = document.createElement("tr");
     const thN = document.createElement("th");
-    thN.textContent = "Num";
+    thN.textContent = "ID";
     tr.append(thN);
     const thCat = document.createElement("th");
     thCat.textContent = "Cat";
@@ -64,8 +64,11 @@ export class Win extends Page {
     this.title.classList.add("winners__title");
     this.subtitle.classList.add("winners__subtitle");
     const commits = await Api.getWinners(10, this.page, this.sort, this.order);
-    if (commits.winners.length === 0) {
+    if (commits.winners.length === 0 && Number(commits.count) === 0) {
       this.container.textContent = "Winners not found";
+      return;
+    } else if (commits.winners.length === 0) {
+      this.page--;
       return;
     }
     App.pageWinCreate = this.page;
@@ -92,6 +95,7 @@ export class Win extends Page {
     });
     table.append(tBody);
     this.area.append(table);
+    this.area.append(this.createPagination(Number(count), 10));
   }
   sortWinners(e: Event) {
     const target = e.target as HTMLElement;
@@ -104,6 +108,8 @@ export class Win extends Page {
   render(): HTMLElement {
     this.createArea();
     this.thead.addEventListener("click", this.sortWinners.bind(this));
+    this.btnNext.addEventListener("click", this.changePageNext.bind(this));
+    this.btnPrev.addEventListener("click", this.changePagePrev.bind(this));
     return this.container;
   }
 }

@@ -74,9 +74,13 @@ export class Api {
   }
   static async getWin(id: number) {
     const response = await fetch(`${localAdress}\\winners\\${id}`);
-    const commits: IWinner = await response.json();
+    if (response.status === 200) {
+      const commits: IWinner = await response.json();
 
-    return commits;
+      return commits;
+    }
+    console.error("Cat isn't winner");
+    return;
   }
   static async createWin(data: IWinner) {
     const response = await fetch(`${localAdress}\\winners`, {
