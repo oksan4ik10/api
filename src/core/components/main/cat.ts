@@ -3,11 +3,6 @@ import { Api } from "../api/api";
 import { IDriveCat } from "../../../types/types";
 
 export class Cat extends Component {
-  name: string;
-  color: string;
-  id: number;
-  btnA: HTMLElement;
-  btnB: HTMLElement;
   static catImg(color: string) {
     return `<svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1920" fill="${color}" class="cat__img">
     <g>
@@ -21,6 +16,12 @@ export class Cat extends Component {
   static finishImg(color: string) {
     return `<svg version="1.1" viewBox="0 0 3300 3300"  xmlns="http://www.w3.org/2000/svg" fill="${color}"><defs></defs><g id="Layer_x0020_1"><g id="_221226120"><path class="fil0" d="M2708 1083l-2116 0c0,584 474,1058 1058,1058 584,0 1058,-474 1058,-1058z"/><path class="fil0" d="M1317 2071l652 0 53 98c38,55 -18,49 -119,47 -119,-3 -211,0 -306,0 -79,0 -159,1 -258,0 -83,-1 -100,6 -54,-85l32 -60z"/><path class="fil1" d="M1650 2071l0 -987 -1058 0c0,465 300,860 717,1002l8 -14 333 0z"/><path class="fil1" d="M1650 2071l-333 0 -8 14 -25 45c-46,91 -29,84 54,85 99,1 179,0 258,0 18,0 35,0 53,0l0 -74 0 -70z"/></g></g></svg>`;
   }
+  name: string;
+  color: string;
+  id: number;
+  btnA: HTMLElement;
+  btnB: HTMLElement;
+  stopAnimate: { [key: string]: string } | undefined;
   constructor(
     tagName: string,
     className: string,
@@ -34,6 +35,7 @@ export class Cat extends Component {
     this.id = id;
     this.btnA = document.createElement("button");
     this.btnB = document.createElement("button");
+    this.stopAnimate = {};
   }
   createCat() {
     this.btnB.setAttribute("disabled", "true");
@@ -75,6 +77,12 @@ export class Cat extends Component {
     const res = await this.startPromiseCat();
     this.row(res);
   }
+  drive(res: { [key: string]: string } | undefined) {
+    if (!res) {
+      this.stopAnimate = undefined;
+      return;
+    }
+  }
   async row(resStart: IDriveCat) {
     this.btnA.setAttribute("disabled", "true");
     this.btnB.removeAttribute("disabled");
@@ -86,7 +94,7 @@ export class Cat extends Component {
     if (cat) {
       catX =
         100 -
-        ((cat.getBoundingClientRect().x + 100) / window.screen.availWidth) *
+        ((cat.getBoundingClientRect().x + 120) / window.screen.availWidth) *
           100;
     }
     let idAnimation: number;
@@ -104,6 +112,9 @@ export class Cat extends Component {
 
     if (!resDrive) {
       cancelAnimationFrame(idAnimation);
+      throw new Error("505!");
+    } else {
+      return { cat: this, time: (duration / 1000).toFixed(2) };
     }
   }
   async stop() {

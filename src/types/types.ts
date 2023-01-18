@@ -17,3 +17,7 @@ export interface IDriveCat {
   velocity: number;
   distance: number;
 }
+export interface IWinnerCatRace {
+  cat: ICat;
+  time: string;
+}

@@ -6,6 +6,7 @@ import { Api } from "../../core/components/api/api";
 import { FormCat } from "../../core/components/main/form";
 import { ICreateCat } from "../../types/types";
 import { IDriveCat } from "../../types/types";
+import { IWinnerCatRace } from "../../types/types";
 export class Main extends Page {
   cats: Cat[];
   areaCats: HTMLElement;
@@ -14,6 +15,7 @@ export class Main extends Page {
   btnGenerate: HTMLElement;
   btnReset: HTMLElement;
   btnLunch: HTMLElement;
+  modal: HTMLElement;
   static randomColor(): string {
     const r = Math.floor(Math.random() * 256);
     const g = Math.floor(Math.random() * 256);
@@ -64,6 +66,8 @@ export class Main extends Page {
     this.btnGenerate = document.createElement("button");
     this.btnLunch = document.createElement("button");
     this.btnReset = document.createElement("button");
+
+    this.modal = document.createElement("div");
   }
 
   async createArea() {
@@ -192,16 +196,29 @@ export class Main extends Page {
     const arrCatsPromise: PromiseSettledResult<IDriveCat>[] = await Promise.allSettled(
       this.cats.map((item) => item.startPromiseCat())
     );
-    console.log(arrCatsPromise);
 
-    arrCatsPromise.forEach((item, index) => {
-      if (item.status === "fulfilled") {
-        this.cats[index].row(item.value);
-      }
-    });
+    const res = await Promise.any(
+      arrCatsPromise.map((item, index) => {
+        if (item.status === "fulfilled")
+          return this.cats[index].row(item.value);
+      })
+    );
+    if (res) {
+      this.createModal(res);
+    }
+  }
+  createModal(obj: IWinnerCatRace) {
+    this.modal.className = "modal active";
+    const wrapper = document.createElement("div");
+    wrapper.className = "modal__wrapper";
+    const title = document.createElement("h2");
+    title.textContent = `${obj.cat.name} ate first (${obj.time} s)`;
+    wrapper.append(title);
+    this.modal.append(wrapper);
+    this.areaCats.append(this.modal);
   }
 
-  render(): HTMLElement {
+  render() {
     this.createArea();
     this.createMain();
     this.formCreate.btn.addEventListener("click", this.createCatBtn.bind(this));
