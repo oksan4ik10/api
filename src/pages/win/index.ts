@@ -88,11 +88,17 @@ export class Win extends Page {
 
     table.append(this.createTableHead());
     const tBody = document.createElement("tbody");
-
-    commits.winners.forEach(async (item) => {
-      const res = await Api.getCat(item.id);
-      tBody.append(this.createRowTable(res, item));
+    const res = await Promise.allSettled(
+      commits.winners.map((item) => {
+        return Api.getCat(item.id);
+      })
+    );
+    res.forEach((item, index) => {
+      if (item.status === "fulfilled") {
+        tBody.append(this.createRowTable(item.value, commits.winners[index]));
+      }
     });
+
     table.append(tBody);
     this.area.append(table);
     this.area.append(this.createPagination(Number(count), 10));

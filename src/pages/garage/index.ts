@@ -84,6 +84,8 @@ export class Main extends Page {
     if (commits.cats.length === 0) return;
     this.cats = [];
     this.btnLunch.removeAttribute("disabled");
+    this.formCreate.btn.removeAttribute("disabled");
+
     App.pageCreate = this.page;
     this.area.textContent = "";
     const count = commits.count;
@@ -121,6 +123,7 @@ export class Main extends Page {
     const el = document.createElement("div");
     el.className = "settings__btns";
     this.btnGenerate.className = "btn__generate btn";
+    this.btnGenerate.removeAttribute("disabled");
     this.btnGenerate.textContent = "generate cat";
     this.btnLunch.className = "btn__lunch btn btn_g";
     this.btnLunch.textContent = "Lunch";
@@ -199,6 +202,8 @@ export class Main extends Page {
     this.btnLunch.setAttribute("disabled", "true");
     this.btnNext.setAttribute("disabled", "true");
     this.btnPrev.setAttribute("disabled", "true");
+    this.btnGenerate.setAttribute("disabled", "true");
+    this.formCreate.btn.setAttribute("disabled", "true");
     const arrCatsPromise: PromiseSettledResult<IDriveCat>[] = await Promise.allSettled(
       this.cats.map((item) => item.startPromiseCat())
     );
