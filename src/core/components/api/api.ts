@@ -72,17 +72,37 @@ export class Api {
     const commits: IWinner[] = await response.json();
     return { winners: commits, count: count };
   }
-  static async createWin() {
+  static async getWin(id: number) {
+    const response = await fetch(`${localAdress}\\winners\\${id}`);
+    const commits: IWinner = await response.json();
+
+    return commits;
+  }
+  static async createWin(data: IWinner) {
     const response = await fetch(`${localAdress}\\winners`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
       },
-      body: JSON.stringify({ id: 2, wins: 10, time: 21 }),
+      body: JSON.stringify(data),
     });
     const result = await response.json();
 
     return result;
+  }
+  static async updateWin(obj: IWinner) {
+    const response = await fetch(`${localAdress}\\winners\\${obj.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: JSON.stringify({ wins: obj.wins, time: obj.time }),
+    });
+    if (response.status === 200) {
+      const result = await response.json();
+      return result;
+    }
+    console.error("Cat not found!");
   }
   static async startCat(id: number, name: string, status: string) {
     const url = new URL(localAdress + "\\engine");

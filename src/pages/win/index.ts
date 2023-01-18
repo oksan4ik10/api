@@ -64,8 +64,6 @@ export class Win extends Page {
     this.title.classList.add("winners__title");
     this.subtitle.classList.add("winners__subtitle");
     const commits = await Api.getWinners(10, this.page, this.sort, this.order);
-    //await Api.createWin();
-
     if (commits.winners.length === 0) {
       this.container.textContent = "Winners not found";
       return;

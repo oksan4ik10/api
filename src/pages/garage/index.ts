@@ -7,6 +7,7 @@ import { FormCat } from "../../core/components/main/form";
 import { ICreateCat } from "../../types/types";
 import { IDriveCat } from "../../types/types";
 import { IWinnerCatRace } from "../../types/types";
+import { IWinner } from "../../types/types";
 export class Main extends Page {
   cats: Cat[];
   areaCats: HTMLElement;
@@ -193,6 +194,7 @@ export class Main extends Page {
     }
   }
   async startGame() {
+    this.btnLunch.setAttribute("disabled", "true");
     const arrCatsPromise: PromiseSettledResult<IDriveCat>[] = await Promise.allSettled(
       this.cats.map((item) => item.startPromiseCat())
     );
@@ -203,11 +205,28 @@ export class Main extends Page {
           return this.cats[index].row(item.value);
       })
     );
+    this.btnReset.removeAttribute("disabled");
     if (res) {
       this.createModal(res);
+      this.addWinner(res);
+    }
+  }
+  async addWinner(obj: IWinnerCatRace) {
+    const res: IWinner = await Api.getWin(obj.cat.id);
+    let resTime = res.time;
+    if (Object.keys(res).length === 0) {
+      await Api.createWin({ id: obj.cat.id, time: Number(obj.time), wins: 1 });
+    } else {
+      if (resTime > Number(obj.time)) resTime = Number(obj.time);
+      await Api.updateWin({
+        id: obj.cat.id,
+        time: resTime,
+        wins: ++res.wins,
+      });
     }
   }
   createModal(obj: IWinnerCatRace) {
+    this.modal.textContent = "";
     this.modal.className = "modal active";
     const wrapper = document.createElement("div");
     wrapper.className = "modal__wrapper";
@@ -216,6 +235,13 @@ export class Main extends Page {
     wrapper.append(title);
     this.modal.append(wrapper);
     this.areaCats.append(this.modal);
+  }
+  async resetGame() {
+    this.btnReset.setAttribute("disabled", "true");
+    await Promise.allSettled(this.cats.map((item) => item.stopCat()));
+    this.cats.forEach((item) => item.btnA.removeAttribute("disabled"));
+    this.btnLunch.removeAttribute("disabled");
+    this.createArea();
   }
 
   render() {
@@ -228,6 +254,7 @@ export class Main extends Page {
     this.areaCats.addEventListener("click", this.btnsCat.bind(this));
     this.formUpdate.btn.addEventListener("click", this.updateCatBtn.bind(this));
     this.btnLunch.addEventListener("click", this.startGame.bind(this));
+    this.btnReset.addEventListener("click", this.resetGame.bind(this));
     return this.container;
   }
 }

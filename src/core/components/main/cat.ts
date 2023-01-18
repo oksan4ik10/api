@@ -117,10 +117,13 @@ export class Cat extends Component {
       return { cat: this, time: (duration / 1000).toFixed(2) };
     }
   }
-  async stop() {
+  async stopCat() {
     await Api.startCat(this.id, this.name, "stopped");
-    this.container.textContent = "";
+  }
+  async stop() {
+    await this.stopCat();
     this.btnA.removeAttribute("disabled");
+    this.container.textContent = "";
     this.createCat();
   }
   render() {
