@@ -13,6 +13,11 @@ export class App {
   private static defaultPageId = "current-page";
   public static pageCreate = 1;
   public static pageWinCreate = 1;
+  public static formCreateInput = "";
+  public static formUpdateInput = "";
+  public static formCreateColor = "";
+  public static formUpdateColor = "";
+  public static formUpdateId = "";
 
   header: Header;
   static renderPage(idPage: string) {

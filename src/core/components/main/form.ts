@@ -1,3 +1,4 @@
+import { App } from "../../../pages/app";
 export class FormCat {
   inputText: HTMLInputElement;
   color: HTMLInputElement;
@@ -23,10 +24,27 @@ export class FormCat {
       else item.removeAttribute("disabled");
     });
   }
+  inputData() {
+    if (this.container.id === "create") {
+      App.formCreateInput = this.inputText.value;
+    } else if (this.container.id === "update") {
+      App.formUpdateInput = this.inputText.value;
+    }
+  }
+  changeColor() {
+    if (this.container.id === "create") {
+      App.formCreateColor = this.color.value;
+    } else if (this.container.id === "update") {
+      App.formUpdateColor = this.color.value;
+    }
+  }
+
   render() {
     this.container.append(this.inputText);
     this.container.append(this.color);
     this.container.append(this.btn);
+    this.inputText.addEventListener("input", this.inputData.bind(this));
+    this.color.addEventListener("change", this.changeColor.bind(this));
     return this.container;
   }
 }

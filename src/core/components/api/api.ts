@@ -72,14 +72,13 @@ export class Api {
     const commits: IWinner[] = await response.json();
     return { winners: commits, count: count };
   }
-  static async getWin(id: number) {
+  static async getWin(id: number, name: string) {
     const response = await fetch(`${localAdress}\\winners\\${id}`);
     if (response.status === 200) {
       const commits: IWinner = await response.json();
-
       return commits;
     }
-    console.error("Cat isn't winner");
+    console.log(`Cat ${name} hasn't won before`);
     return;
   }
   static async createWin(data: IWinner) {

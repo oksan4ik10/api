@@ -85,7 +85,7 @@ export class Main extends Page {
     this.cats = [];
     this.btnLunch.removeAttribute("disabled");
     this.formCreate.btn.removeAttribute("disabled");
-
+    this.btnGenerate.removeAttribute("disabled");
     App.pageCreate = this.page;
     this.area.textContent = "";
     const count = commits.count;
@@ -119,7 +119,13 @@ export class Main extends Page {
     blockSettings.className = "settings";
     blockSettings.append(this.formCreate.render());
     blockSettings.append(this.formUpdate.render());
-    this.formUpdate.setDisabled("true");
+    this.formCreate.inputText.value = App.formCreateInput;
+    this.formCreate.color.value = App.formCreateColor;
+    if (!App.formUpdateInput) this.formUpdate.setDisabled("true");
+    else {
+      this.formUpdate.inputText.value = App.formUpdateInput;
+      this.formUpdate.color.value = App.formUpdateColor;
+    }
     const el = document.createElement("div");
     el.className = "settings__btns";
     this.btnGenerate.className = "btn__generate btn";
@@ -147,6 +153,9 @@ export class Main extends Page {
     const color = this.formCreate.color.value;
     if (!color) return;
     this.createCat({ name: text, color: color });
+    this.formCreate.container.reset();
+    App.formCreateColor = "";
+    App.formCreateInput = "";
     this.createArea();
   }
   async generateCat() {
@@ -164,8 +173,7 @@ export class Main extends Page {
   }
   updateCatBtn(e: Event) {
     e.preventDefault();
-    const target = e.target as HTMLElement;
-    const id = target.id;
+    const id = App.formUpdateId;
     const text = this.formUpdate.inputText.value;
     if (!text) return;
     const color = this.formUpdate.color.value;
@@ -174,13 +182,18 @@ export class Main extends Page {
     this.formUpdate.container.reset();
     this.formUpdate.setDisabled("true");
     this.createArea();
+    App.formUpdateColor = "";
+    App.formUpdateInput = "";
+    App.formUpdateId = "";
   }
-  async btnSelect(id: string) {
-    const cat: ICat = await Api.getCat(Number(id));
+  async btnSelect() {
+    const cat: ICat = await Api.getCat(Number(App.formUpdateId));
     this.formUpdate.setDisabled("false");
     this.formUpdate.btn.id = String(cat.id);
     this.formUpdate.inputText.value = cat.name;
     this.formUpdate.color.value = cat.color;
+    App.formUpdateColor = this.formUpdate.color.value;
+    App.formUpdateInput = this.formUpdate.inputText.value;
   }
   async btnRemove(id: string) {
     await Api.delete(Number(id));
@@ -192,7 +205,8 @@ export class Main extends Page {
     const id = target.closest(".cat")?.getAttribute("id");
     if (id) {
       if (target.matches(".btn__select")) {
-        return this.btnSelect(id);
+        App.formUpdateId = id;
+        this.btnSelect();
       } else {
         return this.btnRemove(id);
       }
@@ -221,7 +235,7 @@ export class Main extends Page {
     }
   }
   async addWinner(obj: IWinnerCatRace) {
-    const res: IWinner | undefined = await Api.getWin(obj.cat.id);
+    const res: IWinner | undefined = await Api.getWin(obj.cat.id, obj.cat.name);
     let resTime: number;
     if (!res) {
       await Api.createWin({ id: obj.cat.id, time: Number(obj.time), wins: 1 });
