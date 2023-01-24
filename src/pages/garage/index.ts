@@ -76,42 +76,51 @@ export class Main extends Page {
     this.title.classList.add("game__title");
     this.subtitle.classList.add("game__subtitle");
     const commits = await Api.getCats(7, this.page);
-    if (Number(commits.count) <= 1) {
-      this.area.textContent = "Not hungry cats. Create cat";
+    if (commits) {
+      if (Number(commits.count) <= 1) {
+        this.area.textContent = "Not hungry cats. Create cat";
+        this.btnLunch.setAttribute("disabled", "true");
+        return;
+      }
+      if (commits.cats.length === 0) return;
+      this.cats = [];
+      this.btnLunch.removeAttribute("disabled");
+      this.formCreate.btn.removeAttribute("disabled");
+      this.btnGenerate.removeAttribute("disabled");
+      App.pageCreate = this.page;
+      this.area.textContent = "";
+      const count = commits.count;
+      this.subtitle.textContent = "Page #";
+      this.title.textContent = "shelter ";
+      this.count.textContent = `(${count})`;
+      this.pageCount.textContent = String(this.page);
+      this.title.append(this.count);
+      this.subtitle.append(this.pageCount);
+      this.area.append(this.title);
+      this.area.append(this.subtitle);
+      this.areaCats.textContent = "";
+      this.areaCats.className = "cats__item cat";
+
+      commits.cats.forEach((element: ICat) => {
+        const el = new Cat(
+          "div",
+          "cats__item cat",
+          element.name,
+          element.color,
+          element.id
+        );
+        this.cats.push(el);
+        this.areaCats.append(el.render());
+      });
+      this.area.append(this.areaCats);
+      await this.area.append(this.createPagination(Number(count), 7));
+    } else {
+      this.area.textContent = "Cats not found";
+      this.formCreate.setDisabled("true");
+      this.formUpdate.setDisabled("true");
       this.btnLunch.setAttribute("disabled", "true");
-      return;
+      this.btnGenerate.setAttribute("disabled", "true");
     }
-    if (commits.cats.length === 0) return;
-    this.cats = [];
-    this.btnLunch.removeAttribute("disabled");
-    this.formCreate.btn.removeAttribute("disabled");
-    this.btnGenerate.removeAttribute("disabled");
-    App.pageCreate = this.page;
-    this.area.textContent = "";
-    const count = commits.count;
-    this.subtitle.textContent = "Page #";
-    this.title.textContent = "shelter ";
-    this.count.textContent = `(${count})`;
-    this.pageCount.textContent = String(this.page);
-    this.title.append(this.count);
-    this.subtitle.append(this.pageCount);
-    this.area.append(this.title);
-    this.area.append(this.subtitle);
-    this.areaCats.textContent = "";
-    this.areaCats.className = "cats__item cat";
-    commits.cats.forEach((element: ICat) => {
-      const el = new Cat(
-        "div",
-        "cats__item cat",
-        element.name,
-        element.color,
-        element.id
-      );
-      this.cats.push(el);
-      this.areaCats.append(el.render());
-    });
-    this.area.append(this.areaCats);
-    await this.area.append(this.createPagination(Number(count), 7));
   }
 
   createMain() {

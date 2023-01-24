@@ -64,44 +64,48 @@ export class Win extends Page {
     this.title.classList.add("winners__title");
     this.subtitle.classList.add("winners__subtitle");
     const commits = await Api.getWinners(10, this.page, this.sort, this.order);
-    if (commits.winners.length === 0 && Number(commits.count) === 0) {
-      this.container.textContent = "Winners not found";
-      return;
-    } else if (commits.winners.length === 0) {
-      this.page--;
-      return;
-    }
-    App.pageWinCreate = this.page;
-    const count = commits.count;
-    this.area.textContent = "";
-    this.subtitle.textContent = "Page #";
-    this.title.textContent = "Winners ";
-    this.count.textContent = `(${count})`;
-    this.pageCount.textContent = String(this.page);
-    this.title.append(this.count);
-    this.subtitle.append(this.pageCount);
-    this.area.append(this.title);
-    this.area.append(this.subtitle);
-    this.container.append(this.area);
-    const table = document.createElement("table");
-    table.className = "table winners__table";
-
-    table.append(this.createTableHead());
-    const tBody = document.createElement("tbody");
-    const res = await Promise.allSettled(
-      commits.winners.map((item) => {
-        return Api.getCat(item.id);
-      })
-    );
-    res.forEach((item, index) => {
-      if (item.status === "fulfilled") {
-        tBody.append(this.createRowTable(item.value, commits.winners[index]));
+    if (commits) {
+      if (commits.winners.length === 0 && Number(commits.count) === 0) {
+        this.container.textContent = "Winners not found";
+        return;
+      } else if (commits.winners.length === 0) {
+        this.page--;
+        return;
       }
-    });
+      App.pageWinCreate = this.page;
+      const count = commits.count;
+      this.area.textContent = "";
+      this.subtitle.textContent = "Page #";
+      this.title.textContent = "Winners ";
+      this.count.textContent = `(${count})`;
+      this.pageCount.textContent = String(this.page);
+      this.title.append(this.count);
+      this.subtitle.append(this.pageCount);
+      this.area.append(this.title);
+      this.area.append(this.subtitle);
+      this.container.append(this.area);
+      const table = document.createElement("table");
+      table.className = "table winners__table";
 
-    table.append(tBody);
-    this.area.append(table);
-    this.area.append(this.createPagination(Number(count), 10));
+      table.append(this.createTableHead());
+      const tBody = document.createElement("tbody");
+      const res = await Promise.allSettled(
+        commits.winners.map((item) => {
+          return Api.getCat(item.id);
+        })
+      );
+      res.forEach((item, index) => {
+        if (item.status === "fulfilled") {
+          tBody.append(this.createRowTable(item.value, commits.winners[index]));
+        }
+      });
+
+      table.append(tBody);
+      this.area.append(table);
+      this.area.append(this.createPagination(Number(count), 10));
+    } else {
+      this.area.textContent = "Winners not found";
+    }
   }
   sortWinners(e: Event) {
     const target = e.target as HTMLElement;

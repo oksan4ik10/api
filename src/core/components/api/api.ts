@@ -5,14 +5,19 @@ export const localAdress = "http://127.0.0.1:3000";
 
 export class Api {
   static async getCats(limit: number, page: number) {
-    const url = new URL(localAdress + "\\garage");
-    url.searchParams.set("_limit", String(limit));
-    url.searchParams.set("_page", String(page));
-    const response = await fetch(url);
-    const count = response.headers.get("X-Total-Count");
+    try {
+      const url = new URL(localAdress + "\\garage");
+      url.searchParams.set("_limit", String(limit));
+      url.searchParams.set("_page", String(page));
+      const response = await fetch(url);
+      const count = response.headers.get("X-Total-Count");
 
-    const commits: ICat[] = await response.json();
-    return { cats: commits, count: count };
+      const commits: ICat[] = await response.json();
+      return { cats: commits, count: count };
+    } catch {
+      console.error("Cats not found");
+      return;
+    }
   }
   static async getCat(id: number) {
     const response = await fetch(`${localAdress}\\garage\\${id}`);
@@ -62,15 +67,20 @@ export class Api {
     sort: string,
     order: string
   ) {
-    const url = new URL(localAdress + "\\winners");
-    url.searchParams.set("_limit", String(limit));
-    url.searchParams.set("_page", String(page));
-    if (sort) url.searchParams.set("_sort", sort);
-    if (order) url.searchParams.set("_order", order);
-    const response = await fetch(url);
-    const count = response.headers.get("X-Total-Count");
-    const commits: IWinner[] = await response.json();
-    return { winners: commits, count: count };
+    try {
+      const url = new URL(localAdress + "\\winners");
+      url.searchParams.set("_limit", String(limit));
+      url.searchParams.set("_page", String(page));
+      if (sort) url.searchParams.set("_sort", sort);
+      if (order) url.searchParams.set("_order", order);
+      const response = await fetch(url);
+      const count = response.headers.get("X-Total-Count");
+      const commits: IWinner[] = await response.json();
+      return { winners: commits, count: count };
+    } catch {
+      console.error("Winners not found");
+      return;
+    }
   }
   static async getWin(id: number, name: string) {
     const response = await fetch(`${localAdress}\\winners\\${id}`);
