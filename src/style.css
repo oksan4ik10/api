@@ -1,0 +1,288 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+    color: #fff;
+}
+body{
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(252,217,255,1) 58%, rgba(0,0,0,1) 100%);
+    margin-left: 10px;
+}
+svg{
+    width: 100px;
+    margin-bottom: -20px;
+}
+.header {
+    margin-top: 30px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+.header__btns{
+    display: flex;
+    gap: 20px;
+}
+
+
+.btn { 
+    border-radius: 5px;
+    padding: 7px 5px;
+    font-weight: 600;
+    background: #fff;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+     box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+     7px 7px 20px 0px rgba(0,0,0,.1),
+     4px 4px 5px 0px rgba(0,0,0,.1);
+    outline: none;
+  }
+  .btn_g{
+    background: rgba(252,217,255,1);
+    color:rgb(139, 125, 125);
+
+  }
+  .btn {
+    border: none;
+    border-radius: 5px;
+    color: #000;
+    z-index: 1;
+  }
+  .btn:after {
+    position: absolute;
+    content: "";
+    width: 0;
+    height: 100%;
+    border-radius: 5px;
+    top: 0;
+    left: 0;
+    direction: rtl;
+    z-index: -1;
+    box-shadow:
+     -7px -7px 20px 0px #fff9,
+     -4px -4px 5px 0px #fff9,
+     7px 7px 20px 0px #0002,
+     4px 4px 5px 0px #0001;
+    transition: all 0.3s ease;
+  }
+  .btn:not(:disabled):hover {
+    color: #4c1751;
+    border-radius: 5px;
+
+  }
+  .btn:not(:disabled):hover:after {
+    left: auto;
+    right: 0;
+    width: 100%;
+  }
+  .btn:not(:disabled):active {
+    top: 2px;
+  }
+
+.btn {
+}
+.btn__garage {
+}
+.btn_g {
+}
+.btn__win {
+}
+.garage {
+}
+.garage__settings {
+}
+.settings {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+.settings__form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+.settings__input {
+    padding: 5px;
+    border-radius: 5px;
+    color:#000;
+
+}
+.settings__input:focus{
+    outline: none;
+}
+
+*:disabled {
+    background-color: rgb(93, 85, 85);
+    color: linen;
+    opacity: 0.6;
+}
+.create__btn {
+}
+.update__btn {
+}
+.settings__btns {
+    display: flex;
+    gap: 10px;
+}
+.btn__start {
+}
+.btn__reset {
+}
+.btn__generate {
+}
+.garage__game {
+}
+.game {
+    position: relative;
+}
+.title,.subtitle{
+    text-transform: capitalize;
+
+}
+.game__title {
+}
+.game__subtitle {
+    margin-bottom: 10px;
+
+}
+.game__cats {
+}
+.cats {
+}
+.cats__item {
+}
+.cat {
+    margin-top: 10px;
+}
+.cat__btns {
+    display: flex;
+    align-items: center;
+    gap:10px;
+}
+.cat__btn{
+    padding: 4px 7px;
+    color:rgb(67, 28, 70);
+    cursor: pointer;
+    font-weight: 600;
+    opacity: 1;
+}
+.cat__btn[disabled=true]{
+    opacity: .5;
+
+}
+
+.cat__block{
+    position: relative;
+}
+.cat__area {
+    display: flex;
+    align-items:center;
+    gap:10px;
+    padding:30px 0px;    
+}
+.cat__area  .cat__img{
+    position: absolute;
+    top:0;
+
+
+}
+.cat__block{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed rgb(90, 186, 69);
+    align-items: flex-end;
+    position: relative;
+}
+.cat__finish{
+    margin-bottom: -7px;
+    margin-right: 5%;
+}
+.cat__finish svg{
+    width: 70px;
+}
+.cat__start {
+}
+.cat__stop {
+}
+.pagination{
+    margin-top: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 10px;
+}
+.table {
+
+	border: none;
+	margin-bottom: 20px;
+}
+.table thead th {
+	padding: 10px;
+    padding-right: 20px;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 20px;
+	text-align: left;
+	color: #fff;
+	border-top: 2px solid #716561;
+	border-bottom: 2px solid #716561;
+    position: relative;
+ 
+}
+th.table__sort{
+    cursor: pointer;
+}
+th.table__sort::after {
+    content: "→";
+    position: absolute;
+    transform: translateY(10%) rotate(90deg);
+  }
+  th.table__sort::before {
+    content: "→";
+    position: absolute;
+    right: 0;
+    transform: translateY(10%) rotate(-90deg);
+  }
+td svg{
+    width: 30px;
+    margin-bottom: 0px;
+ 
+    
+
+}
+.table tbody td {
+    text-align: center;
+	padding: 7px;
+	font-size: 14px;
+	line-height: 20px;
+    font-weight: 500;
+	color: #fff;
+	border-top: 1px solid #716561;
+}
+.modal{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+ 
+}
+
+.modal h2{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 4rem;
+    z-index: 999;
+    color: #FFFFFF;
+    text-shadow: -6px 0px 21px rgb(255, 0, 0);
+
+
+
+}
