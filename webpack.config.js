@@ -17,7 +17,7 @@ const baseConfig = {
             },
             { test: /\.ts$/i, use: 'ts-loader' },
             {
-                test: /\.(png|jpe?g|gif|svg|webp|ico|mp3)$/i, // для загрузки файлов в папку разработки
+                test: /\.(png|jpe?g|gif|svg|webp|ico|mp3)$/i, 
                 type: 'asset/resource',
                 generator: {
                   filename: 'assets/images/[hash][ext]',
@@ -44,12 +44,6 @@ const baseConfig = {
         }),
         new CleanWebpackPlugin(),
         new EslingPlugin({ extensions: 'ts' }),
-        // new CopyPlugin({
-        //     patterns: [
-        //       { from: path.resolve(__dirname, './src/assets/img'), to: path.resolve(__dirname, '../dist/assets/img') },
-        //      { from: path.resolve(__dirname, './src/assets/icons'), to: path.resolve(__dirname, '../dist/assets/icons') },            
-        //     ],
-        //   }),
     ],
 };
 

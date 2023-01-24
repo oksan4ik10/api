@@ -1,5 +1,5 @@
 {
-    "name": "API",
+    "name": "Async-Race",
     "version": "1.0.0",
     "description": "",
     "main": "webpack.base.config.js",
